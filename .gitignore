@@ -1,12 +1,12 @@
 # Packaging
-/.virtualenv/
+.virtualenv/
 *.pyc
 
 # IDE
-/.idea/
+.idea/
 
 # Test
 /src/db.sqlite3
 /src/.cache/
-/.cache
+.cache
 
