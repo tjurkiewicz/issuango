@@ -8,5 +8,5 @@ _ = django.utils.translation.ugettext_lazy
 
 def non_python_keyword(value):
     if keyword.iskeyword(value):
-        raise django.core.exceptionsValidationError(_("This field is invalid as its value is forbidden"))
+        raise django.core.exceptions.ValidationError(_('This field is invalid as its value is forbidden'))
     return value

@@ -11,6 +11,7 @@ import django.utils.translation
 
 import issuango.core.validators
 
+import utils
 
 User = django.conf.settings.AUTH_USER_MODEL
 _ = django.utils.translation.ugettext_lazy
@@ -24,6 +25,9 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        app_label = 'issue'
+
 
 class IssueClass(models.Model):
     name        = models.CharField(max_length=128)
@@ -31,6 +35,9 @@ class IssueClass(models.Model):
 
     def __str__(self):
         return '<{}>'.format(self.name)
+
+    class Meta:
+        app_label = 'issue'
 
 
 class Attribute(models.Model):
@@ -105,9 +112,15 @@ class Attribute(models.Model):
             attribute_value.value = value
             attribute_value.save()
 
+    class Meta:
+        app_label = 'issue'
+
 
 class AttributeOptionGroup(models.Model):
     name = models.CharField(_('Name'), max_length=128)
+
+    class Meta:
+        app_label = 'issue'
 
 
 class AttributeOption(models.Model):
@@ -115,6 +128,9 @@ class AttributeOption(models.Model):
     option = models.CharField(_('Option'), max_length=255)
     glyph  = models.CharField(_('Bootstrap 3 glyph'), max_length=255)
     icon   = models.ImageField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        app_label = 'issue'
 
 
 class AttributeValue(models.Model):
@@ -145,6 +161,9 @@ class AttributeValue(models.Model):
             new_value = self.attribute.option_group.options.get(option=new_value)
         setattr(self, 'value_%s' % self.attribute.type, new_value)
 
+    class Meta:
+        app_label = 'issue'
+
 
 class Issue(django.db.models.Model):
     key     = django.db.models.SlugField()
@@ -166,76 +185,13 @@ class Issue(django.db.models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)
-        self.attr = IssueAttributesContainer(issue=self)
+        self.attr = utils.IssueAttributesContainer(issue=self)
 
     def save(self, *args, **kwargs):
         super(Issue, self).save(*args, **kwargs)
         self.attr.save()
 
-
-class IssueAttributesContainer(object):
-    """
-    Stolen liberally from django-eav, but simplified to be product-specific
-
-    To set attributes on an issue, use the `attr` attribute:
-
-        issue.attr.weight = 125
-    """
-
-    def __setstate__(self, state):
-        self.__dict__ = state
-        self.initialised = False
-
-    def __init__(self, issue):
-        self.issue = issue
-        self.initialised = False
-
-    def __getattr__(self, name):
-        if not name.startswith('_') and not self.initialised:
-            values = self.get_values().select_related('attribute')
-            for v in values:
-                setattr(self, v.attribute.code, v.value)
-            self.initialised = True
-            return getattr(self, name)
-        raise AttributeError(
-            _("%(obj)s has no attribute named '%(attr)s'") % {
-                'obj': self.issue.issue_class, 'attr': name})
-
-    def validate_attributes(self):
-        for attribute in self.get_all_attributes():
-            value = getattr(self, attribute.code, None)
-            if value is None:
-                if attribute.required:
-                    raise django.core.validators.ValidationError(
-                        _("%(attr)s attribute cannot be blank") %
-                        {'attr': attribute.code})
-            else:
-                try:
-                    attribute.validate_value(value)
-                except django.core.validators.ValidationError as e:
-                    raise django.core.validators.ValidationError(
-                        _("%(attr)s attribute %(err)s") %
-                        {'attr': attribute.code, 'err': e})
-
-    def get_values(self):
-        return self.issue.attribute_values.all()
-
-    def get_value_by_attribute(self, attribute):
-        return self.get_values().get(attribute=attribute)
-
-    def get_all_attributes(self):
-        return self.issue.issue_class.attributes.all()
-
-    def get_attribute_by_code(self, code):
-        return self.get_all_attributes().get(code=code)
-
-    def __iter__(self):
-        return iter(self.get_values())
-
-    def save(self):
-        for attribute in self.get_all_attributes():
-            if hasattr(self, attribute.code):
-                value = getattr(self, attribute.code)
-                attribute.save_value(self.issue, value)
+    class Meta:
+        app_label = 'issue'
 
 

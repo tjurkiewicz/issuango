@@ -8,5 +8,8 @@
 # Test
 /src/db.sqlite3
 /src/.cache/
+/src/.coverage
+/src/htmlcov/
 .cache
+
 

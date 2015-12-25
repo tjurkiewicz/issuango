@@ -1,6 +1,8 @@
 Django==1.9
 dealer==2.0.5
 Pillow==3.0.0
+six==1.10.0
 pytest==2.8.5
+pytest-cov==2.2.0
 pytest-django==2.9.1
 
