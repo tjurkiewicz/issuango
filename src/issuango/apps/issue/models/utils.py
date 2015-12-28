@@ -3,6 +3,7 @@ import django.utils.translation
 
 _ = django.utils.translation.ugettext
 
+
 class IssueAttributesContainer(object):
     """
     Stolen liberally from django-eav, but simplified to be product-specific

@@ -1,1 +1,3 @@
-__author__ = 'user'
+__all__ = ['Project', 'Issue']
+
+from models import Project, Issue

@@ -20,10 +20,34 @@ _ = django.utils.translation.ugettext_lazy
 class Project(models.Model):
     name        = models.CharField(max_length=128)
     key         = models.SlugField()
-    issue_class = django.db.models.ForeignKey('IssueClass')
+    issue_class = models.ForeignKey('IssueClass')
+
+    individual_roles = models.ManyToManyField(User, through='ProjectRole', related_name='roles')
+
 
     def __str__(self):
-        return self.name
+        return '<{}>'.format(self.name)
+
+    class Meta:
+        app_label = 'issue'
+
+
+class ProjectRole(models.Model):
+    project = models.ForeignKey('Project', verbose_name=_('Project'))
+    user = models.ForeignKey(User, verbose_name=_('User'))
+
+    READ_ROLE = 'read'
+    WRITE_ROLE = 'write'
+    ADMIN_ROLE = 'admin'
+    ROLE_CHOICES = [
+        (READ_ROLE, _('Read')),
+        (WRITE_ROLE, _('Write')),
+        (ADMIN_ROLE, _('Admin')),
+    ]
+    role = models.CharField(choices=ROLE_CHOICES, default=ROLE_CHOICES[0][0], max_length=10, verbose_name=_('Role'))
+
+    def __str__(self):
+        return '<{}:{}:{}>'.format(self.project, self.user, self.role)
 
     class Meta:
         app_label = 'issue'
@@ -97,7 +121,8 @@ class Attribute(models.Model):
         return self.type == self.BOOLEAN
 
     def save_value(self, issue, value):
-        no_value = lambda: (value is None and not self.is_boolean) or value == '' or (self.is_file and value is False)
+        print "saving ", value, "to ", issue
+        no_value = lambda: value is None or value == '' or (self.is_file and value is False)
 
         try:
             attribute_value = issue.attribute_values.get(attribute=self)

@@ -1,1 +1,1 @@
-default_app_config = 'issuango.apps.issue.app.IssueConfig'
+default_app_config = 'issuango.apps.issue.config.IssueConfig'

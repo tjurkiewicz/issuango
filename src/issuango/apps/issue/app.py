@@ -1,10 +1,18 @@
-import django.apps
-import django.utils.translation
+import django.conf.urls
 
-_ = django.utils.translation.ugettext_lazy
+import issuango.core.application
+
+import views
 
 
-class IssueConfig(django.apps.AppConfig):
-    label = 'issue'
-    name = 'issuango.apps.issue'
-    verbose_name = _('Issues')
+class IssueApplication(issuango.core.application.Application):
+    name = 'issue'
+
+    create_issue_view = views.CreateIssueView
+
+    def get_urls(self):
+        return [
+            django.conf.urls.url(r'^create/$', self.create_issue_view.as_view(), name='create'),
+        ]
+
+application = IssueApplication()
