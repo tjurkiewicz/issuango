@@ -1,10 +1,18 @@
-import django.apps
-import django.utils.translation
+import django.conf.urls
 
-_ = django.utils.translation.ugettext_lazy
+import issuango.core.application
+
+import views
 
 
-class Dashboardonfig(django.apps.AppConfig):
-    label = 'dashboard'
-    name = 'issuango.apps.dashboard'
-    verbose_name = _('Dashboard')
+class DashboardApplication(issuango.core.application.Application):
+    name = 'dashboard'
+
+    index_view = views.IndexView
+
+    def get_urls(self):
+        return [
+            django.conf.urls.url(r'$', self.index_view.as_view(), name='index'),
+        ]
+
+application = DashboardApplication()

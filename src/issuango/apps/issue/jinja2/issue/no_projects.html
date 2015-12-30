@@ -1,0 +1,14 @@
+{% extends 'issuango/layout.html' %}
+
+{% block content %}
+    <h1>{{ _('No projects available') }}</h1>
+
+    {% if request.user.is_staff %}
+        <p>{{ _('You have no projects assigned to your account in write mode. You can use the xxxx to add
+            yourself some privileges.') }}</p>
+    {% else %}
+        <p>{{ _('Please contact your administrator.') }}</p>
+    {% endif %}
+
+{% endblock content %}
+

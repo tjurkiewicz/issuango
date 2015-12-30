@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'widget_tweaks',
     'issuango.apps.dashboard',
     'issuango.apps.issue',
+    'issuango.apps.user',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -57,19 +59,13 @@ ROOT_URLCONF = 'issuango.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [
-            os.path.join(BASE_DIR, 'issuango', 'templates'),
+            os.path.join(BASE_DIR, 'issuango', 'jinja2'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'dealer.contrib.django.context_processor',
-            ],
+            'environment': 'issuango.core.jinja2.environment',
         },
     },
 ]
@@ -130,6 +126,4 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'issuango', 'static'),
 ]
 
-DEALER_TYPE = 'git'
-DEALER_PATH = os.path.dirname(BASE_DIR)
 

@@ -1,0 +1,41 @@
+{% extends 'issuango/base.html' %}
+
+{% block styles %}
+    <link rel='stylesheet' type='text/css' href='{{ static("issuango/css/styles.css") }}' />
+    <link rel='stylesheet' type='text/css' href='{{ static("issuango/css/sticky-footer.css") }}' />
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css' />
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href='{{ static("bootstrap-3.3.6/css/bootstrap.min.css") }}' />
+    <link rel="stylesheet" href='{{ static("bootstrap-3.3.6/css/bootstrap-theme.min.css") }}' />
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <!-- Twitter Bootstrap -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src='{{ static("bootstrap-3.3.6/js/bootstrap.min.js") }}'></script>
+{% endblock %}
+
+{% block layout %}
+    {# Top-horizontal bar with account, notifictions, dashboard links #}
+    {% include 'issuango/fragments/nav_primary.html' %}
+
+    {% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                {% block sidebar %}
+                {% endblock sidebar %}
+            </div>
+            <div class="col-md-10">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </div>
+    {% endblock body %}
+
+    {# Bottom-horizontal bar with informations #}
+    {% include 'issuango/fragments/footer.html' %}
+{% endblock %}

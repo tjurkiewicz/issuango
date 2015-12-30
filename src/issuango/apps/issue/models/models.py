@@ -9,6 +9,8 @@ import django.core.validators
 import django.db.models as models
 import django.utils.translation
 
+import treebeard.mp_tree as tree
+
 import issuango.core.validators
 
 import utils
@@ -190,9 +192,16 @@ class AttributeValue(models.Model):
         app_label = 'issue'
 
 
-class Issue(django.db.models.Model):
-    key     = django.db.models.SlugField()
+class IssueStatus(models.Model):
+    glyph = models.CharField(_('Bootstrap 3 glyph'), max_length=255)
+    icon = models.ImageField(max_length=255, blank=True, null=True)
+    name = models.CharField(_('Name'), max_length=128)
+
+
+class Issue(tree.Node):
+    key = django.db.models.SlugField()
     project = django.db.models.ForeignKey(Project)
+    status = django.db.models.ForeignKey(IssueStatus, related_name='issues')
 
     assignee = django.db.models.ForeignKey(User, null=True, blank=True, related_name='assigned_set')
     reporter = django.db.models.ForeignKey(User, related_name='reported_set')
@@ -215,6 +224,10 @@ class Issue(django.db.models.Model):
     def save(self, *args, **kwargs):
         super(Issue, self).save(*args, **kwargs)
         self.attr.save()
+
+    def clean(self):
+        self.attr.validate_attributes()
+        super(Issue, self).clean()
 
     class Meta:
         app_label = 'issue'

@@ -1,11 +1,9 @@
-{% load i18n %}
 <footer class="footer">
     <div class="container">
         <p class="text-muted">
             {% include "issuango/fragments/brand.html" %}
-            {{ REVISION }} {{ TAG }}
-            <a href="#">{% trans "Report a problem" %}</a>
-            <a href="#">{% trans "About issuango" %}</a>
+            <a href="#">{{ _("Report a problem") }}</a>
+            <a href="#">{{ _("About issuango") }}</a>
         </p>
     </div>
 </footer>

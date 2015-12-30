@@ -1,0 +1,31 @@
+{% if not field.is_hidden %}
+    <div class="form-group">
+        {% block label %}
+            {% if not nolabel and field_type(field)  != 'CheckboxInput' %}
+                <label for="{{ field.auto_id }}" class="col-sm-3 control-label">{{ field.label|safe }}</label>
+            {% endif %}
+        {% endblock label %}
+
+        {% block widget %}
+            <div class="col-sm-9 {% if 'CheckboxInput' == field_type(field) %}checkbox{% endif %}">
+
+                {% if 'CheckboxInput' == field_type(field)  %}
+                    <label for="{{ field.auto_id }}" class="checkbox {% if field.field.required %}required{% endif %}">
+                        {{ field }}
+                        {{ field.label|safe }}{% if field.field.required %} <span>*</span>{% endif %}
+                    </label>
+                {% elif 'RadioSelect' == field_type(field) %}
+                    <label for="{{ field.auto_id }}" class="controls {% if field.field.required %}required{% endif %}">
+                        {{ field }}
+                    </label>
+                {% else %}
+                    {{ render_with_class(field, 'form-control') }}
+                {% endif %}
+
+
+            </div>
+        {% endblock widget %}
+    </div>
+{% else %}
+    {{ field }}
+{% endif %}
