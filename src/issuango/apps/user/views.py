@@ -6,6 +6,8 @@ import django.views.generic
 
 import forms
 
+import issuango.apps.dashboard.app
+
 
 class SignInView(django.views.generic.FormView):
     form_class = forms.SignInForm
@@ -29,5 +31,5 @@ class SignOutView(django.views.generic.RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         django.contrib.auth.logout(self.request)
-        return django.core.urlresolvers.reverse('dashboard:index')
+        return issuango.apps.dashboard.app.application.reverse('index')
 

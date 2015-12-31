@@ -1,5 +1,6 @@
 # Some of the models based on django-oscar
 
+import datetime
 import six
 
 import django.conf
@@ -49,7 +50,7 @@ class ProjectRole(models.Model):
     role = models.CharField(choices=ROLE_CHOICES, default=ROLE_CHOICES[0][0], max_length=10, verbose_name=_('Role'))
 
     def __str__(self):
-        return '<{}:{}:{}>'.format(self.project, self.user, self.role)
+        return '<{0}@{1}: {2}>'.format(self.user, self.project.name, self.role)
 
     class Meta:
         app_label = 'issue'
@@ -118,12 +119,7 @@ class Attribute(models.Model):
     def is_option(self):
         return self.type == self.OPTION
 
-    @property
-    def is_boolean(self):
-        return self.type == self.BOOLEAN
-
     def save_value(self, issue, value):
-        print "saving ", value, "to ", issue
         no_value = lambda: value is None or value == '' or (self.is_file and value is False)
 
         try:
@@ -138,6 +134,66 @@ class Attribute(models.Model):
         elif value != attribute_value.value:
             attribute_value.value = value
             attribute_value.save()
+
+    def validate_value(self, value):
+        validator = getattr(self, '_validate_%s' % self.type)
+        validator(value)
+
+    # Validators
+
+    def _validate_text(self, value):
+        if not isinstance(value, six.string_types):
+            raise django.core.validators.ValidationError(_('Must be str or unicode'))
+    _validate_richtext = _validate_text
+
+    def _validate_float(self, value):
+        try:
+            float(value)
+        except ValueError:
+            raise django.core.validators.ValidationError(_('Must be a float'))
+
+    def _validate_integer(self, value):
+        try:
+            int(value)
+        except ValueError:
+            raise django.core.validators.ValidationError(_('Must be an integer'))
+
+    def _validate_date(self, value):
+        if not isinstance(value, (datetime.datetime, datetime.date)):
+            raise django.core.validators.ValidationError(_('Must be a date or datetime'))
+
+    def _validate_boolean(self, value):
+        if not type(value) == bool:
+            raise django.core.validators.ValidationError(_('Must be a boolean'))
+
+    def _validate_entity(self, value):
+        if not isinstance(value, models.Model):
+            raise django.core.validators.ValidationError(_('Must be a model instance'))
+
+    def _validate_option(self, value):
+        if self.is_option and isinstance(value, six.string_types):
+            try:
+                value = self.option_group.options.get(option=value)
+            except AttributeOption.DoesNotExist:
+                raise django.core.validators.ValidationError(
+                    _('String can replace option value only if it points to valid AttributeOption instance'))
+
+        if not isinstance(value, AttributeOption):
+            raise django.core.validators.ValidationError(
+                _('Must be an AttributeOption model object instance'))
+        if not value.pk:
+            raise django.core.validators.ValidationError(_("AttributeOption has not been saved yet"))
+        valid_values = self.option_group.options.values_list(
+            'option', flat=True)
+        if value.option not in valid_values:
+            raise django.core.validators.ValidationError(
+                _("%(enum)s is not a valid choice for %(attr)s") %
+                {'enum': value, 'attr': self})
+
+    def _validate_file(self, value):
+        if value and not isinstance(value, File):
+            raise django.core.validators.ValidationError(_("Must be a file field"))
+    _validate_image = _validate_file
 
     class Meta:
         app_label = 'issue'
@@ -158,6 +214,7 @@ class AttributeOption(models.Model):
 
     class Meta:
         app_label = 'issue'
+        unique_together = ('group', 'option', )
 
 
 class AttributeValue(models.Model):
@@ -169,7 +226,7 @@ class AttributeValue(models.Model):
     value_boolean  = models.NullBooleanField(_('Boolean'), blank=True)
     value_float    = models.FloatField(_('Float'),         blank=True, null=True)
     value_richtext = models.TextField(_('Richtext'),       blank=True, null=True)
-    value_date     = models.DateField(_('Date'),           blank=True, null=True)
+    value_date     = models.DateTimeField(_('Date'),       blank=True, null=True)
     value_option   = models.ForeignKey('AttributeOption',  blank=True, null=True, verbose_name=_("Value option"))
     value_file     = models.FileField(max_length=255,      blank=True, null=True)
     value_image    = models.ImageField(max_length=255,     blank=True, null=True)
@@ -198,7 +255,7 @@ class IssueStatus(models.Model):
     name = models.CharField(_('Name'), max_length=128)
 
 
-class Issue(tree.Node):
+class Issue(tree.MP_Node):
     key = django.db.models.SlugField()
     project = django.db.models.ForeignKey(Project)
     status = django.db.models.ForeignKey(IssueStatus, related_name='issues')

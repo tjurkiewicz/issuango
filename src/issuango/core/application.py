@@ -9,7 +9,7 @@ class Application(object):
         self.app_name = app_name
 
     def get_urls(self):
-        return []
+        raise NotImplementedError
 
     @property
     # It will work like standard urls module.

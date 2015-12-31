@@ -15,24 +15,28 @@ def user():
     return User.objects.create_user('john', 'john@example.com', 'password')
 
 @pytest.fixture
-def project():
-    project = models.Project(issue_class=issue_class())
-    project.save()
-    return project
-
-
-@pytest.fixture
 def issue_class():
     issue_class = models.IssueClass(name='Basic issue class')
     issue_class.save()
     return issue_class
 
+@pytest.fixture
+def project(issue_class):
+    project = models.Project(issue_class=issue_class, name='project name')
+    project.save()
+    return project
 
 @pytest.fixture
-def issue():
-    issue = models.Issue(project=project(), reporter=user(), status=status())
-    issue.save()
+def issue(project, user, status):
+    issue = models.Issue.add_root(project=project, reporter=user, status=status)
     return issue
+
+@pytest.fixture
+def project_role(project, user):
+    project_role = models.ProjectRole(project=project, user=user, role=models.ProjectRole.READ_ROLE)
+    project_role.save()
+    return project_role
+
 
 @pytest.fixture
 def attribute():
