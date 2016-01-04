@@ -23,7 +23,7 @@ _ = django.utils.translation.ugettext_lazy
 class Project(models.Model):
     name        = models.CharField(max_length=128)
     key         = models.SlugField()
-    issue_class = models.ForeignKey('IssueClass')
+    attribute_scheme = models.ForeignKey('AttributeScheme')
 
     individual_roles = models.ManyToManyField(User, through='ProjectRole', related_name='roles')
 
@@ -56,9 +56,9 @@ class ProjectRole(models.Model):
         app_label = 'issue'
 
 
-class IssueClass(models.Model):
+class AttributeScheme(models.Model):
     name        = models.CharField(max_length=128)
-    code        = models.SlugField()
+    code        = models.SlugField(unique=True)
 
     def __str__(self):
         return '<{}>'.format(self.name)
@@ -68,8 +68,8 @@ class IssueClass(models.Model):
 
 
 class Attribute(models.Model):
-    issue_class = models.ForeignKey('IssueClass', related_name='attributes', blank=True, null=True,
-                                    verbose_name=_("Issue class"))
+    attribute_scheme = models.ManyToManyField(AttributeScheme, related_name='attributes', blank=True,
+                                    verbose_name=_('Attribute schemas'))
     name = models.CharField(_('Name'), max_length=128)
     code = models.SlugField(_('Code'), max_length=128,
                             validators=[
@@ -255,7 +255,7 @@ class IssueStatus(models.Model):
     name = models.CharField(_('Name'), max_length=128)
 
 
-class Issue(tree.MP_Node):
+class Issue(models.Model):
     key = django.db.models.SlugField()
     project = django.db.models.ForeignKey(Project)
     status = django.db.models.ForeignKey(IssueStatus, related_name='issues')
@@ -271,8 +271,8 @@ class Issue(tree.MP_Node):
     attributes = django.db.models.ManyToManyField('Attribute', through='AttributeValue')
 
     @property
-    def issue_class(self):
-        return self.project.issue_class
+    def attribute_scheme(self):
+        return self.project.attribute_scheme
 
     def __init__(self, *args, **kwargs):
         super(Issue, self).__init__(*args, **kwargs)

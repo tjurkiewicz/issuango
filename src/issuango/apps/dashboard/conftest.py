@@ -1,29 +1,6 @@
 import pytest
 
-import models
-
 _password = 'password'
-
-@pytest.fixture
-def attribute_scheme():
-    attribute_scheme = models.AttributeScheme(name='Basic issue class')
-    attribute_scheme.save()
-    return attribute_scheme
-
-@pytest.fixture
-def project(attribute_scheme):
-    project = models.Project(attribute_scheme=attribute_scheme, name='project name')
-    project.save()
-    return project
-
-@pytest.fixture
-def role(user, project):
-    def fixture(role):
-        role = models.ProjectRole(user=user, project=project, role=role)
-        role.save()
-        return role
-    return fixture
-
 
 @pytest.fixture
 def user(db, django_user_model, django_username_field):

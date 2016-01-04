@@ -5,6 +5,5 @@ import django.utils.translation
 _ = django.utils.translation.ugettext
 
 
-class SignInForm(auth_forms.AuthenticationForm):
-    remember = django.forms.BooleanField(label=_('Remember me'), required=False)
+SignInForm = auth_forms.AuthenticationForm
 

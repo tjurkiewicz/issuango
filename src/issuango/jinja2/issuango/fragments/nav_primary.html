@@ -12,10 +12,10 @@
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse navbar-responsive-collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ _("Issues") }}<span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" >{{ _("Issues") }}<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">{{ _("Search") }}</a></li>
           </ul>
@@ -27,14 +27,15 @@
             <li><a href="#">{{ _("Create") }}</a></li>
           </ul>
         </li>
+        <li><a href="{{ url('issue:issue-create') }}">{{ _("Create issue") }}</a></li>
       </ul>
-      <a href="{{ url('issue:create') }}" role="button" class="btn btn-primary navbar-btn">{{ _("Create issue") }}</a>
+
 
 
       {% if request.user.is_authenticated() %}
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i><span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons">account_circle</i><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="{{ url('user:sign-out') }}">{{ _('Your account') }}</a></li>
             <li><a href="{{ url('user:sign-out') }}">{{ _('Sign out') }}</a></li>
@@ -45,7 +46,7 @@
 
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-cog"></i><span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons">settings</i><span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">{{ _("Users") }}</a></li>
             <li><a href="#">{{ _("Projects") }}</a></li>
@@ -56,7 +57,6 @@
       <form class="navbar-form navbar-right" role="search">
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Search">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
         </div>
       </form>
 

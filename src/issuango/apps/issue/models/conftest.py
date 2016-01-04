@@ -15,20 +15,20 @@ def user():
     return User.objects.create_user('john', 'john@example.com', 'password')
 
 @pytest.fixture
-def issue_class():
-    issue_class = models.IssueClass(name='Basic issue class')
-    issue_class.save()
-    return issue_class
+def attribute_scheme():
+    attribute_scheme = models.AttributeScheme(name='Basic issue class')
+    attribute_scheme.save()
+    return attribute_scheme
 
 @pytest.fixture
-def project(issue_class):
-    project = models.Project(issue_class=issue_class, name='project name')
+def project(attribute_scheme):
+    project = models.Project(attribute_scheme=attribute_scheme, name='project name')
     project.save()
     return project
 
 @pytest.fixture
 def issue(project, user, status):
-    issue = models.Issue.add_root(project=project, reporter=user, status=status)
+    issue = models.Issue.objects.create(project=project, reporter=user, status=status)
     return issue
 
 @pytest.fixture
@@ -40,8 +40,9 @@ def project_role(project, user):
 
 @pytest.fixture
 def attribute():
-    def fixture(issue_class, type, name='name', code='code', **kwargs):
-        a = models.Attribute(issue_class=issue_class, name=name, code=code, type=type, **kwargs)
+    def fixture(attribute_scheme, type, name='name', code='code', **kwargs):
+        a = models.Attribute(name=name, code=code, type=type, **kwargs)
         a.save()
+        a.attribute_scheme.add(attribute_scheme)
         return a
     return fixture

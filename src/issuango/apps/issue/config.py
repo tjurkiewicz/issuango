@@ -10,3 +10,4 @@ class IssueConfig(django.apps.AppConfig):
     verbose_name = _('Issues')
 
 
+

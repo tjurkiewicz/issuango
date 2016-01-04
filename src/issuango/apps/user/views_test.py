@@ -15,7 +15,7 @@ def test_do_sign_in_success(client, user):
     next = 'something'
     url = '{}?{}={}'.format(app.application.reverse('sign-in'), views.SignInView.redirect_field_name, next)
 
-    response = client.post(url, {'username': user.username, 'password': 'password', 'remember': False})
+    response = client.post(url, {'username': user.username, 'password': 'password'})
     assert response.status_code == httplib.FOUND
     assert response.url == next
 

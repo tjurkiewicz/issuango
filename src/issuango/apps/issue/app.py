@@ -1,20 +1,23 @@
-import django.conf.urls
-
 import issuango.core.application
 
 import views
 
 
 class IssueApplication(issuango.core.application.Application):
+
     name = 'issue'
 
-    create_issue_view = views.CreateIssueView
-    no_projects_view = views.NoProjectsView
+    views = [
+        (views.IssueCreateView,      r'^issue/create/$',              'issue-create',       False,),
+        (views.IssueCreateView,      r'^issue/(?P<slug>[-\w]+-\d+)$', 'issue-detail',       False,),
 
-    def get_urls(self):
-        return [
-            django.conf.urls.url(r'^create/$', self.create_issue_view.as_view(), name='create'),
-            django.conf.urls.url(r'^no-projects/$', self.no_projects_view.as_view(), name='no-projects'),
-        ]
+        (views.AttributeSchemeListView,   r'^attribute-scheme/$',        'attribute-scheme-list',   True,),
+        (views.AttributeSchemeCreateView, r'^attribute-scheme/create/$', 'attribute-scheme-create', True,),
+        (views.AttributeSchemeUpdateView, r'^attribute-scheme/update/(?P<code>[-\w]+)$', 'attribute-scheme-update', True,),
+        (views.AttributeSchemeDeleteView, r'^attribute-scheme/delete/(?P<code>[-\w]+)$', 'attribute-scheme-delete', True,),
+
+        (views.NoProjectsView,       r'^no-projects/$',               'no-projects',        False,),
+    ]
+
 
 application = IssueApplication()

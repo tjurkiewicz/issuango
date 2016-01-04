@@ -1,0 +1,25 @@
+{% extends 'issuango/layout.html' %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="#">{{ _("Home") }}</a></li>
+        <li><a href="#">{{ _("Configuration") }}</a></li>
+        <li class="active">here</li>
+    </ul>
+{% endblock breadcrumbs %}
+
+
+{% block sidebar %}
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ _("Issue attributes") }}</h3>
+  </div>
+  <div class="panel-body">
+      <div class="btn-group-vertical">
+        <a href="{{ url('issue:attribute-scheme-list') }}" class="btn btn-link">{{ _("Attribute schemes") }}</a>
+        <a href="#" class="btn btn-link">{{ _("Link") }}</a>
+      </div>
+  </div>
+</div>
+
+{% endblock sidebar %}

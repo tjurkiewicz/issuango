@@ -7,9 +7,11 @@ import django.views.generic
 import forms
 
 import issuango.apps.dashboard.app
+import issuango.core.mixins
 
 
-class SignInView(django.views.generic.FormView):
+class SignInView(issuango.core.mixins.PermissionMixin, django.views.generic.FormView):
+    login_required = False
     form_class = forms.SignInForm
     template_name = 'user/login.html'
     redirect_field_name = 'next'
@@ -27,7 +29,7 @@ class SignInView(django.views.generic.FormView):
         return super(SignInView, self).form_valid(form)
 
 
-class SignOutView(django.views.generic.RedirectView):
+class SignOutView(issuango.core.mixins.PermissionMixin, django.views.generic.RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         django.contrib.auth.logout(self.request)

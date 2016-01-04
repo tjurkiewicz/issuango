@@ -28,7 +28,7 @@ class IssueAttributesContainer(object):
                 setattr(self, v.attribute.code, v.value)
             self.initialised = True
             return getattr(self, name)
-        raise AttributeError(_('{0} has no attribute named `{1}`').format(self.issue.issue_class, name))
+        raise AttributeError(_('{0} has no attribute named `{1}`').format(self.issue.attribute_scheme, name))
 
     def validate_attributes(self):
         for attribute in self.get_all_attributes():
@@ -46,7 +46,7 @@ class IssueAttributesContainer(object):
         return self.issue.attribute_values.all()
 
     def get_all_attributes(self):
-        return self.issue.issue_class.attributes.all()
+        return self.issue.attribute_scheme.attributes.all()
 
     def get_attribute_by_code(self, code):
         return self.get_all_attributes().get(code=code)

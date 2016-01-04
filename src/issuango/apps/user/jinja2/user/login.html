@@ -1,12 +1,18 @@
 {% extends 'issuango/layout.html' %}
 
 {% block body %}
-    <form id="login_form" action="{{ request.get_full_path() }}" method="post" class="form-horizontal" >
-        <div class="col-sm-4 col-sm-offset-4">
-            <h3>{{ _("Log In") }}</h3>
-            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-            {% include "issuango/forms/fields.html" %}
-            <button name="login_submit" type="submit" value="Log In" class="btn btn-primary" data-loading-text="{{ _('Logging in...') }}">{{ _("Log In") }}</button>
+    <div class="col-sm-4 col-sm-offset-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{ _("Sign In") }}</h3>
+          </div>
+          <div class="panel-body">
+            <form id="login_form" action="{{ request.get_full_path() }}" method="post" class="form-horizontal" >
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                {% include "issuango/forms/fields.html" %}
+                <button name="login_submit" type="submit" value="Log In" class="btn btn-primary pull-right" data-loading-text="{{ _('Signing in...') }}">{{ _("Sign In") }}</button>
+            </form>
+          </div>
         </div>
-    </form>
+    </div>
 {% endblock body %}

@@ -27,6 +27,7 @@ def environment(**opts):
 
         'render_with_class': widget_tweaks.templatetags.widget_tweaks.add_class,
 
+
         'settings': django.conf.settings,
         'static': django.contrib.staticfiles.storage.staticfiles_storage.url,
         'url': django.core.urlresolvers.reverse

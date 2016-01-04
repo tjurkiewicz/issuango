@@ -1,0 +1,16 @@
+{% extends 'issue/issue_layout.html' %}
+
+{% block content %}
+    <form id="login_form" action="{{ request.get_full_path() }}" method="post" class="form-horizontal" >
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{ _("Create Attribute scheme") }}</h3>
+          </div>
+          <div class="panel-body">
+            {% include "issuango/forms/fields.html" %}
+            <button name="login_submit" type="submit" value="Log In" class="btn btn-primary pull-right" data-loading-text="{{ _('Creating...') }}">{{ _("Create") }}</button>
+          </div>
+        </div>
+    </form>
+{% endblock content %}

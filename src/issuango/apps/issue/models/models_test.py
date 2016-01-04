@@ -14,8 +14,8 @@ def test_project_str(project):
 
 
 @pytest.mark.django_db
-def test_issue_class_str(issue_class):
-    assert str(issue_class) == '<{0}>'.format(issue_class.name)
+def test_attribute_scheme_str(attribute_scheme):
+    assert str(attribute_scheme) == '<{0}>'.format(attribute_scheme.name)
 
 @pytest.mark.django_db
 def test_project_role_str(project_role):
@@ -38,7 +38,7 @@ def test_issue_auto_now(issue):
 ])
 @pytest.mark.django_db
 def test_attribute(issue, attribute, value, type, repeat):
-    attr = attribute(issue.project.issue_class, type)
+    attr = attribute(issue.project.attribute_scheme, type)
 
     while repeat:
         issue.attr.code = value
@@ -57,7 +57,7 @@ def test_attribute(issue, attribute, value, type, repeat):
 ])
 @pytest.mark.django_db
 def test_update_attribute(issue, attribute, value, new_value, type):
-    attr = attribute(issue.project.issue_class, type)
+    attr = attribute(issue.project.attribute_scheme, type)
 
     issue.attr.code = value
     issue.clean()
@@ -81,7 +81,7 @@ def test_update_attribute(issue, attribute, value, new_value, type):
 ])
 @pytest.mark.django_db
 def test_delete_attribute(issue, attribute, value, type):
-    attr = attribute(issue.project.issue_class, type)
+    attr = attribute(issue.project.attribute_scheme, type)
 
     issue.attr.code = value
     issue.clean()
@@ -103,7 +103,7 @@ def test_delete_attribute(issue, attribute, value, type):
 ])
 @pytest.mark.django_db
 def test_no_attribute(issue, attribute, value, type):
-    attribute(issue.project.issue_class, type, code='code')
+    attribute(issue.project.attribute_scheme, type, code='code')
 
     issue.attr.code = value
     issue.clean()
@@ -121,7 +121,7 @@ def test_no_attribute(issue, attribute, value, type):
 ])
 @pytest.mark.django_db
 def test_validators(issue, attribute, bad_value, type):
-    attr = attribute(issue.project.issue_class, type)
+    attr = attribute(issue.project.attribute_scheme, type)
 
     with pytest.raises(django.core.validators.ValidationError):
         attr.validate_value(bad_value)
@@ -136,7 +136,7 @@ def test_validators(issue, attribute, bad_value, type):
 ])
 @pytest.mark.django_db
 def test_required_attribute(issue, attribute, type):
-    attribute(issue.project.issue_class, type, required=True)
+    attribute(issue.project.attribute_scheme, type, required=True)
 
     with pytest.raises(django.core.validators.ValidationError):
         issue.attr.code = None
@@ -145,7 +145,7 @@ def test_required_attribute(issue, attribute, type):
 
 @pytest.mark.django_db
 def test_bad_integer_attribute(issue, attribute):
-    attr = attribute(issue.project.issue_class, models.Attribute.INTEGER)
+    attr = attribute(issue.project.attribute_scheme, models.Attribute.INTEGER)
 
     with pytest.raises(ValueError):
         attribute_value = models.AttributeValue(issue=issue, attribute=attr)
@@ -158,7 +158,7 @@ def test_attribute_option_group_is_selected_iff_type_is_selected(issue, attribut
     option_group = models.AttributeOptionGroup(name='option_group')
     option_group.save()
 
-    attr = attribute(issue.issue_class, models.Attribute.OPTION, option_group=option_group)
+    attr = attribute(issue.attribute_scheme, models.Attribute.OPTION, option_group=option_group)
 
     option = models.AttributeOption(group=option_group, option='option')
     option.save()
@@ -174,7 +174,7 @@ def test_set_option_by_string(issue, attribute):
     option_group = models.AttributeOptionGroup(name='option_group')
     option_group.save()
 
-    attr = attribute(issue.issue_class, models.Attribute.OPTION, option_group=option_group)
+    attr = attribute(issue.attribute_scheme, models.Attribute.OPTION, option_group=option_group)
 
     option_name = 'option'
     option = models.AttributeOption(group=option_group, option=option_name)
@@ -191,7 +191,7 @@ def test_set_bad_option_by_string(issue, attribute):
     option_group = models.AttributeOptionGroup(name='option_group')
     option_group.save()
 
-    attribute(issue.issue_class, models.Attribute.OPTION, option_group=option_group)
+    attribute(issue.attribute_scheme, models.Attribute.OPTION, option_group=option_group)
 
     option_name = 'option'
     option = models.AttributeOption(group=option_group, option=option_name)
@@ -206,7 +206,7 @@ def test_set_not_an_option(issue, attribute):
     option_group = models.AttributeOptionGroup(name='option_group')
     option_group.save()
 
-    attribute(issue.issue_class, models.Attribute.OPTION, option_group=option_group)
+    attribute(issue.attribute_scheme, models.Attribute.OPTION, option_group=option_group)
 
     with pytest.raises(django.core.validators.ValidationError):
         issue.attr.code = issue
@@ -217,7 +217,7 @@ def test_set_unsaved_option(issue, attribute):
     option_group = models.AttributeOptionGroup(name='option_group')
     option_group.save()
 
-    attribute(issue.issue_class, models.Attribute.OPTION, option_group=option_group)
+    attribute(issue.attribute_scheme, models.Attribute.OPTION, option_group=option_group)
 
     option_name = 'option'
     option = models.AttributeOption(group=option_group, option=option_name)
@@ -235,8 +235,8 @@ def test_set_unrelated_option(issue, attribute):
     option_group2 = models.AttributeOptionGroup(name='option_group2')
     option_group2.save()
 
-    attribute(issue.issue_class, models.Attribute.OPTION, option_group=option_group, name='name', code='code')
-    attribute(issue.issue_class, models.Attribute.OPTION, option_group=option_group2, name='name2', code='code2')
+    attribute(issue.attribute_scheme, models.Attribute.OPTION, option_group=option_group, name='name', code='code')
+    attribute(issue.attribute_scheme, models.Attribute.OPTION, option_group=option_group2, name='name2', code='code2')
 
     option_name = 'option'
     option2 = models.AttributeOption(group=option_group2, option=option_name)
