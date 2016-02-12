@@ -6,6 +6,7 @@ import pytest
 
 import validators
 
+
 @pytest.mark.parametrize('kw', keyword.kwlist)
 def test_python_keyword(kw):
     with pytest.raises(django.core.exceptions.ValidationError):

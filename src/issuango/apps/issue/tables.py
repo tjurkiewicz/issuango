@@ -14,10 +14,10 @@ _ = django.utils.translation.ugettext
 class AttributeSchemeTable(issuango.core.tables.BaseTable):
     allow_sort = True
 
-    select_all = issuango.core.tables.SelectCol(_('Select all'))
+    select_all = issuango.core.tables.SelectCol()
     name = flask_table.Col(_('Name'))
     code = flask_table.Col(_('Code'))
-    edit = issuango.core.tables.TemplateCol(_('Actions'), 'issue/attributescheme_list_actions.html', allow_sort=False)
+    edit = issuango.core.tables.DjangoTemplateCol(_('Actions'), 'issue/attributescheme_list_actions.html', allow_sort=False)
 
     def sort_url(self, col_key, reverse=False):
         kwargs = {

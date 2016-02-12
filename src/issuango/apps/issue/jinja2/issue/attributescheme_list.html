@@ -6,13 +6,25 @@
     <h3 class="panel-title">{{ _("Attribute schemes") }} </h3>
   </div>
   <div class="panel-body">
-      <div class="btn-group pull-right">
-            <a href="#" class="btn btn-primary"><i class="material-icons">add_circle</i></a>
-      </div>
 
+      <form id="list_form" action="{{ request.get_full_path() }}" method="post" class="form-horizontal">
+          <div class="btn-group pull-right">
+                <a href="#" class="btn btn-primary"><i class="material-icons">add_circle</i></a>
+                <a href="#" class="btn btn-primary"><i class="material-icons">delete</i></a>
+          </div>
       {{ table }}
-
+      </form>
   </div>
 </div>
-
 {% endblock content %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ static('issuango/js/select-all.js') }}"></script>
+{% endblock scripts %}
+
+{% block onbodyload %}
+    {{ super() }}
+    $('#list_form').selectAll();
+{% endblock onbodyload %}

@@ -4,7 +4,7 @@ import django.core.urlresolvers
 import django.utils.timezone
 
 import jinja2
-import widget_tweaks.templatetags.widget_tweaks
+import widget_tweaks.templatetags.widget_tweaks as widget_tweaks
 
 import extras
 
@@ -25,7 +25,7 @@ def environment(**opts):
         'field_type': extras.field_type,
         'strftime': extras.strftime,
 
-        'render_with_class': widget_tweaks.templatetags.widget_tweaks.add_class,
+        'render_with_class': widget_tweaks.add_class,
 
 
         'settings': django.conf.settings,
